@@ -133,6 +133,7 @@ function slider(opts){
   input.addEventListener('input',function(){ paint(); if((+input.value)%Math.max(1,Math.round(opts.max/10))===0) tick(); });
   paint();
   wrap.getValue=function(){ return +input.value; };
+  wrap.setValue=function(v){ input.value=Math.max(0,Math.min(opts.max,Math.round(v))); paint(); };
   return wrap;
 }
 
@@ -294,8 +295,9 @@ $('#btn-tg-remind').addEventListener('click',function(){ $('#sheet-tg').classLis
 $$('.sheet-close').forEach(function(b){ b.addEventListener('click',function(){ this.closest('.sheet').classList.remove('on'); }); });
 $$('.sheet').forEach(function(s){ s.addEventListener('click',function(e){ if(e.target===s) s.classList.remove('on'); }); });
 $('#btn-tg-open').addEventListener('click',function(){
-  var t='⚡ Вечерний замер энергии — 30 секунд. Зайди и подвинь три ползунка: '+location.href.split('#')[0];
-  window.open('https://t.me/share/url?url='+encodeURIComponent(location.href.split('#')[0])+'&text='+encodeURIComponent('⚡ Вечерний замер энергии — 30 секунд.'),'_blank');
+  var t=($('#remind-time').value||'21:30').replace(':','');
+  S.remind=$('#remind-time').value||'21:30'; save();
+  window.open('https://t.me/dzen_energy_bot?start=t'+t,'_blank');
 });
 $('#btn-ics').addEventListener('click',function(){
   var time=($('#remind-time').value||'21:30').replace(':','')+'00';
@@ -316,6 +318,7 @@ $('#btn-ics').addEventListener('click',function(){
 var checkSliders={};
 function renderCheck(){
   var box=$('#check-sliders'); box.innerHTML=''; checkSliders={};
+  var vl=$('#voice-line'); if(vl){ vl.hidden=true; vl.textContent=''; }
   var seasonDay=Math.min((S.streak%7)+1,7);
   $('#check-eyebrow').textContent='Серия '+seasonDay+' из 7 · сезон '+(Math.floor(S.streak/7)+1);
   // 1. энергия
@@ -611,6 +614,112 @@ $('#btn-reset').addEventListener('click',function(e){
   }
 });
 
+/* ---------- голосовой ввод ---------- */
+var AI_KEY='dzen10.ai';
+function aiConf(){ try{ return JSON.parse(localStorage.getItem(AI_KEY))||{provider:'local',key:''}; }catch(e){ return {provider:'local',key:''}; } }
+
+var NUMWORDS={'ноль':0,'один':1,'одна':1,'два':2,'две':2,'три':3,'четыре':4,'пять':5,'шесть':6,'семь':7,
+  'восемь':8,'девять':9,'десять':10,'пятнадцать':15,'двадцать':20,'тридцать':30,'сорок':40,
+  'пятьдесят':50,'шестьдесят':60,'семьдесят':70,'восемьдесят':80,'девяносто':90,'сто':100};
+function wordsToNums(s){
+  // «семьдесят пять» → 75
+  return s.replace(/(двадцать|тридцать|сорок|пятьдесят|шестьдесят|семьдесят|восемьдесят|девяносто)\s+(один|два|три|четыре|пять|шесть|семь|восемь|девять)/g,
+    function(m,a,b){ return (NUMWORDS[a]+NUMWORDS[b]); })
+    .replace(/[а-яё]+/g,function(w){ return (w in NUMWORDS)?NUMWORDS[w]:w; });
+}
+function localParse(text){
+  var t=wordsToNums(text.toLowerCase());
+  var out={energy:null,kept:null,hard:null};
+  var m=t.match(/энерг[а-яё]*[^0-9]{0,12}(\d{1,3})/); if(m) out.energy=+m[1];
+  var nums=(t.match(/\d{1,3}/g)||[]).map(Number).filter(function(n){return n<=100;});
+  if(out.energy===null && nums.length) out.energy=nums[0];
+  if(/(сорвал|не держал|не смог|съел|нарушил|провалил)/.test(t)) out.kept=10;
+  else if(/(наполовину|частично|почти)/.test(t)) out.kept=55;
+  else if(/(держал|чисто|не ел|не брал|без сладкого|получилось|справил|удержал|лёг до|лег до)/.test(t)) out.kept=90;
+  if(/(очень тяжело|на зубах|еле|адски|с трудом)/.test(t)) out.hard=90;
+  else if(/(тяжело|сложно|трудно)/.test(t)) out.hard=75;
+  else if(/(нормально|средне|терпимо)/.test(t)) out.hard=45;
+  else if(/(легко|само|без проблем|спокойно)/.test(t)) out.hard=12;
+  return out;
+}
+function aiParse(text,cb){
+  var c=aiConf();
+  var sys='Ты парсер дневного замера. Пользователь наговорил итог дня. Верни ТОЛЬКО JSON вида '+
+    '{"energy":число 0-100 или null,"kept":число 0-100 или null,"hard":число 0-100 или null}. '+
+    'energy — уровень энергии сегодня. kept — насколько держался привычки («'+(S.habits[0]?habit(S.habits[0].id).title:'привычка')+'»): '+
+    'сорвался/нет=5-20, наполовину=50-60, держался/чисто=85-100. hard — насколько тяжело далось: легко=5-20, средне=40-60, тяжело=70-95. '+
+    'Если про что-то не сказано — null. Никакого текста кроме JSON.';
+  function done(raw){
+    try{ var j=JSON.parse((raw.match(/\{[\s\S]*\}/)||['{}'])[0]); cb(j,null); }
+    catch(e){ cb(null,'не разобрал ответ нейронки'); }
+  }
+  if(c.provider==='claude' && c.key){
+    fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{
+      'x-api-key':c.key,'anthropic-version':'2023-06-01','content-type':'application/json',
+      'anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:150,system:sys,
+        messages:[{role:'user',content:text}]})})
+      .then(function(r){return r.json();})
+      .then(function(d){ done(d.content&&d.content[0]?d.content[0].text:''); })
+      .catch(function(){ cb(null,'сеть'); });
+  } else if(c.provider==='groq' && c.key){
+    fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{
+      'Authorization':'Bearer '+c.key,'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',temperature:0,
+        response_format:{type:'json_object'},
+        messages:[{role:'system',content:sys},{role:'user',content:text}]})})
+      .then(function(r){return r.json();})
+      .then(function(d){ done(d.choices&&d.choices[0]?d.choices[0].message.content:''); })
+      .catch(function(){ cb(null,'сеть'); });
+  } else { cb(localParse(text),null); }
+}
+function applyVoice(res,transcript){
+  var line=$('#voice-line'); line.hidden=false;
+  if(!res){ line.textContent='«'+transcript+'» — нейронка не ответила, разобрал по словам.'; res=localParse(transcript); }
+  var parts=[];
+  if(res.energy!==null&&res.energy!==undefined&&checkSliders.energy){ checkSliders.energy.setValue(res.energy); parts.push('энергия '+Math.round(res.energy)); }
+  if(res.kept!==null&&res.kept!==undefined){ S.habits.forEach(function(h,i){ if(checkSliders['kept_'+i]) checkSliders['kept_'+i].setValue(res.kept); }); parts.push('привычка '+Math.round(res.kept)); }
+  if(res.hard!==null&&res.hard!==undefined&&checkSliders.hard){ checkSliders.hard.setValue(res.hard); parts.push('сложность '+Math.round(res.hard)); }
+  line.textContent=parts.length?('Понял так: '+parts.join(' · ')+'. Поправь ползунком, если не так.')
+    :('«'+transcript+'» — не понял значений. Скажи, например: «энергия 70, держался, далось легко».');
+  if(parts.length) pshh();
+}
+// глобально — для тестов и отладки
+window.dzenVoiceApply=function(text){ aiParse(text,function(res){ applyVoice(res||localParse(text),text); }); };
+function voiceInit(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  var btn=$('#btn-voice'); if(!btn) return;
+  if(!SR){ btn.hidden=true; return; }
+  btn.hidden=false;
+  var rec=null, listening=false;
+  btn.addEventListener('click',function(){
+    if(listening){ try{rec.stop();}catch(e){} return; }
+    rec=new SR(); rec.lang='ru-RU'; rec.interimResults=false; rec.maxAlternatives=1;
+    listening=true; btn.classList.add('listening');
+    btn.innerHTML='<span class="voice-ic">🔴</span> Слушаю… говори (тап — стоп)';
+    var lineEl=$('#voice-line'); lineEl.hidden=false; lineEl.textContent='Например: «энергия 70, сладкое не ел, далось тяжело»';
+    function reset(){ listening=false; btn.classList.remove('listening');
+      btn.innerHTML='<span class="voice-ic">🎙</span> Наговори голосом — ползунки встанут сами'; }
+    rec.onresult=function(e){
+      var text=e.results[0][0].transcript; reset();
+      lineEl.textContent='«'+text+'» — думаю…';
+      aiParse(text,function(res){ applyVoice(res,text); });
+    };
+    rec.onerror=function(e){ reset(); lineEl.textContent=e.error==='not-allowed'?'Разреши доступ к микрофону в браузере.':'Не расслышал — попробуй ещё раз.'; };
+    rec.onend=function(){ if(listening) reset(); };
+    try{ rec.start(); }catch(e){ reset(); }
+  });
+}
+$('#btn-ai').addEventListener('click',function(e){
+  e.preventDefault();
+  var c=aiConf(); $('#ai-provider').value=c.provider; $('#ai-key').value=c.key||'';
+  $('#sheet-ai').classList.add('on');
+});
+$('#btn-ai-save').addEventListener('click',function(){
+  localStorage.setItem(AI_KEY,JSON.stringify({provider:$('#ai-provider').value,key:$('#ai-key').value.trim()}));
+  $('#sheet-ai').classList.remove('on'); tick();
+});
+
 /* ---------- онбординг-навигация ---------- */
 $('#btn-start').addEventListener('click',function(){ ac(); show('scr-story1'); });
 $$('.story-next').forEach(function(b){
@@ -624,4 +733,5 @@ $('#btn-to-shelf').addEventListener('click',function(){ renderShelf(false); show
 
 /* ---------- старт ---------- */
 initCinefades();
+voiceInit();
 route();

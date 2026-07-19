@@ -134,6 +134,8 @@
       <div class="eyebrow" id="check-eyebrow">Серия 1 из 7</div>
       <h2>Замер дня</h2>
       <p class="sub">Три ползунка. Тридцать секунд. Честно.</p>
+      <button class="voice-btn" id="btn-voice" hidden><span class="voice-ic">🎙</span> Наговори голосом — ползунки встанут сами</button>
+      <div class="voice-line small" id="voice-line" hidden></div>
       <div id="check-sliders"></div>
       <button class="btn btn-ink" id="btn-check-done">День засчитан</button>
     </div>
@@ -194,6 +196,7 @@
 
       <div class="home-foot tiny">
         <a href="#" id="btn-demo">показать, как будет через неделю · демо</a>
+        <a href="#" id="btn-ai">ИИ для голоса</a>
         <a href="#" id="btn-reset">начать заново</a>
       </div>
     </div>
@@ -215,18 +218,42 @@
     </div>
   </section>
 
+  <!-- ШТОРКА ИИ ДЛЯ ГОЛОСА -->
+  <div class="sheet" id="sheet-ai">
+    <div class="sheet-card">
+      <div class="sheet-grab"></div>
+      <h3>Нейронка для голосового ввода</h3>
+      <p class="small">Голос превращается в текст прямо в телефоне. А чтобы текст сам раскладывался
+      по ползункам, нужна нейронка — вставь ключ одного из сервисов. Без ключа работает
+      простой разбор по словам.</p>
+      <div class="ai-row">
+        <label class="small" for="ai-provider">Нейронка</label>
+        <select id="ai-provider">
+          <option value="local">Без нейронки (по словам)</option>
+          <option value="claude">Claude (Anthropic)</option>
+          <option value="groq">Groq (Llama)</option>
+        </select>
+      </div>
+      <input type="password" id="ai-key" placeholder="Ключ API (хранится только в этом телефоне)" autocomplete="off">
+      <button class="btn btn-ink" id="btn-ai-save">Сохранить</button>
+      <button class="btn btn-ghost sheet-close">Закрыть</button>
+    </div>
+  </div>
+
   <!-- ШТОРКА TELEGRAM -->
   <div class="sheet" id="sheet-tg">
     <div class="sheet-card">
       <div class="sheet-grab"></div>
       <h3>Напоминание в Telegram</h3>
-      <p class="small">Телеграм не умеет сам писать тебе по расписанию без бота — но есть трюк на 20 секунд:</p>
+      <p class="small">У нас есть бот <b>@dzen_energy_bot</b>. Жми кнопку, в боте нажми «Старт» —
+      и каждый вечер в выбранное время будет приходить напоминание замерить день.
+      Семь серий — потом бот сам поздравит с финалом сезона.</p>
       <ol class="small sheet-list">
-        <li>Нажми кнопку ниже — откроется Telegram с готовым сообщением.</li>
-        <li>Отправь его себе в «Избранное».</li>
-        <li>Зажми сообщение → «Отправить позже» → выбери завтрашний вечер. Повторишь за 2 секунды, когда придёт.</li>
+        <li>Открой бота кнопкой ниже.</li>
+        <li>Нажми «Старт» (или «Restart»).</li>
+        <li>Готово. Отключить — командой /stop в любой момент.</li>
       </ol>
-      <button class="btn btn-ink" id="btn-tg-open">Открыть Telegram</button>
+      <button class="btn btn-ink" id="btn-tg-open">Открыть бота</button>
       <button class="btn btn-ghost sheet-close">Закрыть</button>
     </div>
   </div>
