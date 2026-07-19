@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DZEN · Энергия — насколько ты в ресурсе?</title>
+<meta name="description" content="Честный замер энергии за 2 минуты. Одна привычка в фокусе. 7 дней — один сезон. Газировка, после которой чувствуешь себя лучше.">
+<meta property="og:title" content="DZEN · Энергия — насколько ты в ресурсе?">
+<meta property="og:description" content="Замерь уровень энергии за 2 минуты и запусти свой первый сезон из 7 серий.">
+<meta property="og:image" content="assets/img/scene_hero.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ЭКРАН 0 · ХИРО -->
+  <section class="scr scr-cinema" id="scr-hero">
+    <div class="cinefade" data-img-a="assets/img/scene_hero.jpg" data-img-b="assets/img/scene_hero_b.jpg"></div>
+    <div class="cine-veil"></div>
+    <div class="cine-content">
+      <div class="brandline">DZEN · Энергия</div>
+      <h1 class="display">Насколько ты<br><em>в&nbsp;ресурсе?</em></h1>
+      <p class="cine-sub">Честный замер энергии. Шесть ползунков, две минуты.<br>Дальше — 30 секунд в день.</p>
+      <button class="btn btn-light" id="btn-start">Проверить свой уровень</button>
+      <div class="tiny cine-tiny">без регистрации · всё хранится только у тебя</div>
+    </div>
+  </section>
+
+  <!-- ЭКРАНЫ ИСТОРИИ · 3 ПАНЕЛИ -->
+  <section class="scr scr-cinema" id="scr-story1">
+    <div class="cinefade" data-img-a="assets/img/scene_stress.jpg" data-img-b="assets/img/scene_stress_b.jpg"></div>
+    <div class="cine-veil dark"></div>
+    <div class="cine-content">
+      <div class="story-step">1 / 3</div>
+      <h2 class="display">Мир не даёт передышки</h2>
+      <p class="cine-sub">Курс валют. Ставка ЦБ. Новости, от которых дёргается глаз.
+      Стресс приходит снаружи — и списывает твою энергию, как подписка, которую ты не оформлял.</p>
+      <button class="btn btn-light story-next">Дальше</button>
+    </div>
+  </section>
+
+  <section class="scr scr-cinema" id="scr-story2">
+    <div class="cinefade" data-img-a="assets/img/scene_joy.jpg" data-img-b="assets/img/scene_joy_b.jpg"></div>
+    <div class="cine-veil"></div>
+    <div class="cine-content">
+      <div class="story-step">2 / 3</div>
+      <h2 class="display">А ты сюда пришёл жить</h2>
+      <p class="cine-sub">В комфорте, в балансе, с ощущением радости.
+      Это не каприз — это то, ради чего всё затевалось.</p>
+      <button class="btn btn-light story-next">Дальше</button>
+    </div>
+  </section>
+
+  <section class="scr scr-cinema" id="scr-story3">
+    <div class="cinefade" data-img-a="assets/img/scene_long.jpg" data-img-b="assets/img/scene_long_b.jpg"></div>
+    <div class="cine-veil"></div>
+    <div class="cine-content">
+      <div class="story-step">3 / 3</div>
+      <h2 class="display">И пусть это длится долго</h2>
+      <p class="cine-sub">Радость легко занять у будущего себя.
+      Привычки — это способ, которым сегодняшний кайф не превращается в завтрашний счёт.</p>
+      <button class="btn btn-light" id="btn-to-quiz">Замерить энергию</button>
+    </div>
+  </section>
+
+  <!-- КВИЗ · ПО ОДНОМУ ВОПРОСУ -->
+  <section class="scr scr-paper" id="scr-quiz">
+    <div class="quiz-top">
+      <div class="quiz-progress" id="quiz-progress"></div>
+      <button class="quiz-back" id="quiz-back" aria-label="Назад">←</button>
+    </div>
+    <div class="quiz-body" id="quiz-body"><!-- вопросы рисует JS --></div>
+  </section>
+
+  <!-- СЧИТАЕМ -->
+  <section class="scr scr-paper scr-center" id="scr-calc">
+    <div class="calc-can" id="calc-can"></div>
+    <h2 class="display" id="calc-word">Считаем…</h2>
+    <p class="sub" id="calc-line">Сверяем с внутренней бухгалтерией</p>
+  </section>
+
+  <!-- РЕЗУЛЬТАТ -->
+  <section class="scr scr-paper" id="scr-result">
+    <div class="pad">
+      <div class="eyebrow">Твой индекс ресурса</div>
+      <div class="bignum" id="res-num">0</div>
+      <div class="res-scaleline"><div class="res-scalefill" id="res-fill"></div><div class="res-dot" id="res-dot"></div></div>
+      <h2 id="res-verdict" class="res-verdict"></h2>
+      <p class="sub" id="res-sub"></p>
+      <div class="factors" id="res-factors"></div>
+      <div class="leak-card" id="res-leak"></div>
+      <button class="btn btn-ink" id="btn-to-shelf">Выбрать один фокус</button>
+      <div class="tiny center">Дальше — самое важное: не всё сразу, а одна привычка.</div>
+    </div>
+  </section>
+
+  <!-- ПОЛКА ПРИВЫЧЕК -->
+  <section class="scr scr-paper" id="scr-shelf">
+    <div class="pad">
+      <div class="eyebrow">Сезон 1 · 7 серий</div>
+      <h2>Выбери <em class="serif">одну</em> привычку</h2>
+      <p class="sub">Не пять сразу. Одна. Семь дней подряд — это один сезон.
+      Каждый день — одна серия по 30 секунд.</p>
+    </div>
+    <div class="shelf" id="shelf"><!-- постеры рисует JS --></div>
+    <div class="pad">
+      <div class="shelf-hint" id="shelf-hint"></div>
+      <button class="btn btn-ink" id="btn-pick" disabled>Запустить сезон</button>
+    </div>
+  </section>
+
+  <!-- ПЛАН / НАПОМИНАНИЕ -->
+  <section class="scr scr-paper" id="scr-plan">
+    <div class="pad">
+      <div class="eyebrow">Сезон запущен</div>
+      <h2 id="plan-title"></h2>
+      <p class="sub">Серия 1 выходит сегодня. Зайди вечером, подвинь три ползунка —
+      и день засчитан. Без самобичевания: сорвался — тоже данные.</p>
+      <div class="plan-card">
+        <div class="plan-row"><span>⏰</span><div><b>Напоминание</b><div class="small">Каждый вечер, чтобы серия не сорвалась</div></div></div>
+        <div class="remind-time"><label class="small" for="remind-time">Время замера</label>
+          <input type="time" id="remind-time" value="21:30"></div>
+        <button class="btn btn-soft" id="btn-tg-remind">Напоминание в Telegram</button>
+        <button class="btn btn-soft" id="btn-ics">Добавить в календарь</button>
+      </div>
+      <button class="btn btn-ink" id="btn-plan-done">Понял, до вечера</button>
+    </div>
+  </section>
+
+  <!-- ЕЖЕДНЕВНЫЙ ЗАМЕР -->
+  <section class="scr scr-paper" id="scr-check">
+    <div class="pad">
+      <div class="eyebrow" id="check-eyebrow">Серия 1 из 7</div>
+      <h2>Замер дня</h2>
+      <p class="sub">Три ползунка. Тридцать секунд. Честно.</p>
+      <div id="check-sliders"></div>
+      <button class="btn btn-ink" id="btn-check-done">День засчитан</button>
+    </div>
+  </section>
+
+  <!-- РЕЗУЛЬТАТ ДНЯ -->
+  <section class="scr scr-paper scr-center" id="scr-dayres">
+    <div class="dayres-emoji" id="dayres-emoji">⚡</div>
+    <h2 class="display" id="dayres-title"></h2>
+    <p class="sub center pad-h" id="dayres-sub"></p>
+    <div class="streak-pill" id="dayres-streak"></div>
+    <button class="btn btn-ink" id="btn-dayres-home">К прогрессу</button>
+  </section>
+
+  <!-- ДОМ / ПРОГРЕСС -->
+  <section class="scr scr-paper" id="scr-home">
+    <div class="home-hero">
+      <div class="cinefade" data-img-a="assets/img/scene_hero.jpg" data-img-b="assets/img/scene_hero_b.jpg"></div>
+      <div class="cine-veil"></div>
+      <div class="home-hero-content">
+        <div class="brandline">DZEN · Энергия</div>
+        <div class="home-season" id="home-season"></div>
+        <div class="ring-wrap"><svg id="ring" viewBox="0 0 120 120"></svg>
+          <div class="ring-center"><div class="ring-num" id="ring-num">0</div><div class="ring-label">из 7 серий</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pad">
+      <button class="btn btn-ink" id="btn-go-check">Замерить день · 30 сек</button>
+      <div class="home-checked tiny center" id="home-checked"></div>
+
+      <div class="card">
+        <div class="card-title">Энергия по дням</div>
+        <svg id="spark" viewBox="0 0 300 90" preserveAspectRatio="none"></svg>
+        <div class="spark-legend tiny" id="spark-legend"></div>
+      </div>
+
+      <div class="card" id="insight-card" hidden>
+        <div class="card-title">Находка</div>
+        <p id="insight-text" class="insight"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ачивки</div>
+        <div class="achv-row" id="achv-row"></div>
+      </div>
+
+      <div class="card habit-card" id="habit-card"></div>
+
+      <div class="dzen-banner">
+        <img src="assets/img/poster_drink.jpg" alt="" class="dzen-banner-img">
+        <div>
+          <div class="serif dzen-banner-title">Энергия любит пузырьки</div>
+          <p class="small">DZEN — газировка без сахара, с клетчаткой для микробиоты.
+          Польза, которую не надо терпеть. Ищи в Додо Пицце.</p>
+        </div>
+      </div>
+
+      <div class="home-foot tiny">
+        <a href="#" id="btn-demo">показать, как будет через неделю · демо</a>
+        <a href="#" id="btn-reset">начать заново</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- АЧИВКА · ФИНАЛ СЕЗОНА -->
+  <section class="scr scr-paper scr-center" id="scr-achieve">
+    <canvas id="confetti"></canvas>
+    <div class="achieve-wrap">
+      <div class="eyebrow">Финал сезона</div>
+      <canvas id="share-card" width="1080" height="1350"></canvas>
+      <p class="sub center">Ты правда красавчик. Такое не стыдно показать.</p>
+      <div class="share-row">
+        <button class="btn btn-ink" id="btn-share-tg">Поделиться в Telegram</button>
+        <button class="btn btn-soft" id="btn-share-save">Скачать картинку</button>
+      </div>
+      <button class="btn btn-soft" id="btn-achieve-next" hidden>Запустить сезон 2 · добавить привычку</button>
+      <button class="btn btn-ghost" id="btn-achieve-home">К прогрессу</button>
+    </div>
+  </section>
+
+  <!-- ШТОРКА TELEGRAM -->
+  <div class="sheet" id="sheet-tg">
+    <div class="sheet-card">
+      <div class="sheet-grab"></div>
+      <h3>Напоминание в Telegram</h3>
+      <p class="small">Телеграм не умеет сам писать тебе по расписанию без бота — но есть трюк на 20 секунд:</p>
+      <ol class="small sheet-list">
+        <li>Нажми кнопку ниже — откроется Telegram с готовым сообщением.</li>
+        <li>Отправь его себе в «Избранное».</li>
+        <li>Зажми сообщение → «Отправить позже» → выбери завтрашний вечер. Повторишь за 2 секунды, когда придёт.</li>
+      </ol>
+      <button class="btn btn-ink" id="btn-tg-open">Открыть Telegram</button>
+      <button class="btn btn-ghost sheet-close">Закрыть</button>
+    </div>
+  </div>
+
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>
