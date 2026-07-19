@@ -732,6 +732,15 @@ $('#btn-to-quiz').addEventListener('click',startQuiz);
 $('#btn-to-shelf').addEventListener('click',function(){ renderShelf(false); show('scr-shelf'); });
 
 /* ---------- старт ---------- */
+// «волшебная ссылка» настройки нейронки: #ai=groq:KEY или #ai=claude:KEY
+(function(){
+  var m=location.hash.match(/^#ai=(groq|claude|local):?(.*)$/);
+  if(m){
+    localStorage.setItem(AI_KEY,JSON.stringify({provider:m[1],key:decodeURIComponent(m[2]||'')}));
+    history.replaceState(null,'',location.pathname+location.search);
+    setTimeout(function(){ alert('Нейронка для голоса подключена: '+(m[1]==='groq'?'Groq':m[1]==='claude'?'Claude':'разбор по словам')); },400);
+  }
+})();
 initCinefades();
 voiceInit();
 route();
