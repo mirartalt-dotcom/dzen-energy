@@ -3,262 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DZEN · Энергия — насколько ты в ресурсе?</title>
-<meta name="description" content="Честный замер энергии за 2 минуты. Одна привычка в фокусе. 7 дней — один сезон. Газировка, после которой чувствуешь себя лучше.">
-<meta property="og:title" content="DZEN · Энергия — насколько ты в ресурсе?">
-<meta property="og:description" content="Замерь уровень энергии за 2 минуты и запусти свой первый сезон из 7 серий.">
-<meta property="og:image" content="assets/img/scene_hero.jpg">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
-<link rel="stylesheet" href="assets/style.css">
+<title>DZEN · Энергия — выбери свою версию</title>
+<meta name="description" content="Трекер энергии DZEN: замер за минуту, одна привычка на 7 дней, сезоны и ачивки. Четыре версии — выбери свой вкус.">
+<meta name="apple-mobile-web-app-title" content="DZEN">
+<meta name="theme-color" content="#F4F1EA">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<link rel="icon" href="assets/img/icon-180.png">
+<style>
+@font-face{font-family:'Cormorant Garamond';src:url('assets/fonts/cormorant.ttf') format('truetype');font-weight:250 700;font-display:swap}
+@font-face{font-family:'Cormorant Garamond';src:url('assets/fonts/cormorant-italic.ttf') format('truetype');font-weight:250 700;font-style:italic;font-display:swap}
+@font-face{font-family:'Inter';src:url('assets/fonts/inter.ttf') format('truetype');font-weight:100 900;font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',system-ui,sans-serif;background:#2B2A26;color:#2B2A26;-webkit-font-smoothing:antialiased}
+.wrap{max-width:520px;margin:0 auto;min-height:100dvh;background:#F4F1EA;padding:34px 20px 40px;display:flex;flex-direction:column;gap:18px}
+.brand{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.12em;color:#56732E}
+h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(34px,9vw,46px);line-height:1.06}
+h1 em{font-style:italic}
+.sub{color:#6E6A5F;font-size:15.5px;line-height:1.55}
+.cont{background:#2B2A26;color:#F4F1EA;border-radius:18px;padding:16px 18px;text-decoration:none;
+  font-weight:700;text-align:center;display:none;box-shadow:0 14px 40px rgba(43,42,38,.25)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vcard{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:3/4;text-decoration:none;color:#F4F1EA;
+  display:flex;box-shadow:0 12px 34px rgba(43,42,38,.18);transition:transform .25s cubic-bezier(.22,.9,.3,1)}
+.vcard:active{transform:scale(.97)}
+.vcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vcard .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,19,15,.05) 30%,rgba(20,19,15,.78))}
+.vcard.light .veil{background:linear-gradient(180deg,rgba(20,19,15,0) 30%,rgba(20,19,15,.6))}
+.vc-txt{position:relative;margin-top:auto;padding:14px}
+.vc-kind{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.85;font-weight:800}
+.vc-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;line-height:1.1;margin-top:3px}
+.vc-note{font-size:11.5px;opacity:.85;margin-top:3px;line-height:1.35}
+.foot{text-align:center;font-size:12px;color:#6E6A5F}
+.foot a{color:#56732E}
+.tag{position:absolute;top:10px;left:10px;background:rgba(244,241,234,.92);color:#2B2A26;border-radius:99px;
+  padding:4px 10px;font-size:10.5px;font-weight:800;letter-spacing:.04em}
+</style>
 </head>
 <body>
-<div class="app" id="app">
-
-  <!-- ЭКРАН 0 · ХИРО -->
-  <section class="scr scr-cinema" id="scr-hero">
-    <div class="cinefade" data-img-a="assets/img/scene_hero.jpg" data-img-b="assets/img/scene_hero_b.jpg"></div>
-    <div class="cine-veil"></div>
-    <div class="cine-content">
-      <div class="brandline">DZEN · Энергия</div>
-      <h1 class="display">Насколько ты<br><em>в&nbsp;ресурсе?</em></h1>
-      <p class="cine-sub">Честный замер энергии. Шесть ползунков, две минуты.<br>Дальше — 30 секунд в день.</p>
-      <button class="btn btn-light" id="btn-start">Проверить свой уровень</button>
-      <div class="tiny cine-tiny">без регистрации · всё хранится только у тебя</div>
-    </div>
-  </section>
-
-  <!-- ЭКРАНЫ ИСТОРИИ · 3 ПАНЕЛИ -->
-  <section class="scr scr-cinema" id="scr-story1">
-    <div class="cinefade" data-img-a="assets/img/scene_stress.jpg" data-img-b="assets/img/scene_stress_b.jpg"></div>
-    <div class="cine-veil dark"></div>
-    <div class="cine-content">
-      <div class="story-step">1 / 3</div>
-      <h2 class="display">Мир не даёт передышки</h2>
-      <p class="cine-sub">Курс валют. Ставка ЦБ. Новости, от которых дёргается глаз.
-      Стресс приходит снаружи — и списывает твою энергию, как подписка, которую ты не оформлял.</p>
-      <button class="btn btn-light story-next">Дальше</button>
-    </div>
-  </section>
-
-  <section class="scr scr-cinema" id="scr-story2">
-    <div class="cinefade" data-img-a="assets/img/scene_joy.jpg" data-img-b="assets/img/scene_joy_b.jpg"></div>
-    <div class="cine-veil"></div>
-    <div class="cine-content">
-      <div class="story-step">2 / 3</div>
-      <h2 class="display">А ты сюда пришёл жить</h2>
-      <p class="cine-sub">В комфорте, в балансе, с ощущением радости.
-      Это не каприз — это то, ради чего всё затевалось.</p>
-      <button class="btn btn-light story-next">Дальше</button>
-    </div>
-  </section>
-
-  <section class="scr scr-cinema" id="scr-story3">
-    <div class="cinefade" data-img-a="assets/img/scene_long.jpg" data-img-b="assets/img/scene_long_b.jpg"></div>
-    <div class="cine-veil"></div>
-    <div class="cine-content">
-      <div class="story-step">3 / 3</div>
-      <h2 class="display">И пусть это длится долго</h2>
-      <p class="cine-sub">Радость легко занять у будущего себя.
-      Привычки — это способ, которым сегодняшний кайф не превращается в завтрашний счёт.</p>
-      <button class="btn btn-light" id="btn-to-quiz">Замерить энергию</button>
-    </div>
-  </section>
-
-  <!-- КВИЗ · ПО ОДНОМУ ВОПРОСУ -->
-  <section class="scr scr-paper" id="scr-quiz">
-    <div class="quiz-top">
-      <div class="quiz-progress" id="quiz-progress"></div>
-      <button class="quiz-back" id="quiz-back" aria-label="Назад">←</button>
-    </div>
-    <div class="quiz-body" id="quiz-body"><!-- вопросы рисует JS --></div>
-  </section>
-
-  <!-- СЧИТАЕМ -->
-  <section class="scr scr-paper scr-center" id="scr-calc">
-    <div class="calc-can" id="calc-can"></div>
-    <h2 class="display" id="calc-word">Считаем…</h2>
-    <p class="sub" id="calc-line">Сверяем с внутренней бухгалтерией</p>
-  </section>
-
-  <!-- РЕЗУЛЬТАТ -->
-  <section class="scr scr-paper" id="scr-result">
-    <div class="pad">
-      <div class="eyebrow">Твой индекс ресурса</div>
-      <div class="bignum" id="res-num">0</div>
-      <div class="res-scaleline"><div class="res-scalefill" id="res-fill"></div><div class="res-dot" id="res-dot"></div></div>
-      <h2 id="res-verdict" class="res-verdict"></h2>
-      <p class="sub" id="res-sub"></p>
-      <div class="factors" id="res-factors"></div>
-      <div class="leak-card" id="res-leak"></div>
-      <button class="btn btn-ink" id="btn-to-shelf">Выбрать один фокус</button>
-      <div class="tiny center">Дальше — самое важное: не всё сразу, а одна привычка.</div>
-    </div>
-  </section>
-
-  <!-- ПОЛКА ПРИВЫЧЕК -->
-  <section class="scr scr-paper" id="scr-shelf">
-    <div class="pad">
-      <div class="eyebrow">Сезон 1 · 7 серий</div>
-      <h2>Выбери <em class="serif">одну</em> привычку</h2>
-      <p class="sub">Не пять сразу. Одна. Семь дней подряд — это один сезон.
-      Каждый день — одна серия по 30 секунд.</p>
-    </div>
-    <div class="shelf" id="shelf"><!-- постеры рисует JS --></div>
-    <div class="pad">
-      <div class="shelf-hint" id="shelf-hint"></div>
-      <button class="btn btn-ink" id="btn-pick" disabled>Запустить сезон</button>
-    </div>
-  </section>
-
-  <!-- ПЛАН / НАПОМИНАНИЕ -->
-  <section class="scr scr-paper" id="scr-plan">
-    <div class="pad">
-      <div class="eyebrow">Сезон запущен</div>
-      <h2 id="plan-title"></h2>
-      <p class="sub">Серия 1 выходит сегодня. Зайди вечером, подвинь три ползунка —
-      и день засчитан. Без самобичевания: сорвался — тоже данные.</p>
-      <div class="plan-card">
-        <div class="plan-row"><span>⏰</span><div><b>Напоминание</b><div class="small">Каждый вечер, чтобы серия не сорвалась</div></div></div>
-        <div class="remind-time"><label class="small" for="remind-time">Время замера</label>
-          <input type="time" id="remind-time" value="21:30"></div>
-        <button class="btn btn-soft" id="btn-tg-remind">Напоминание в Telegram</button>
-        <button class="btn btn-soft" id="btn-ics">Добавить в календарь</button>
-      </div>
-      <button class="btn btn-ink" id="btn-plan-done">Понял, до вечера</button>
-    </div>
-  </section>
-
-  <!-- ЕЖЕДНЕВНЫЙ ЗАМЕР -->
-  <section class="scr scr-paper" id="scr-check">
-    <div class="pad">
-      <div class="eyebrow" id="check-eyebrow">Серия 1 из 7</div>
-      <h2>Замер дня</h2>
-      <p class="sub">Три ползунка. Тридцать секунд. Честно.</p>
-      <button class="voice-btn" id="btn-voice" hidden><span class="voice-ic">🎙</span> Наговори голосом — ползунки встанут сами</button>
-      <div class="voice-line small" id="voice-line" hidden></div>
-      <div id="check-sliders"></div>
-      <button class="btn btn-ink" id="btn-check-done">День засчитан</button>
-    </div>
-  </section>
-
-  <!-- РЕЗУЛЬТАТ ДНЯ -->
-  <section class="scr scr-paper scr-center" id="scr-dayres">
-    <div class="dayres-emoji" id="dayres-emoji">⚡</div>
-    <h2 class="display" id="dayres-title"></h2>
-    <p class="sub center pad-h" id="dayres-sub"></p>
-    <div class="streak-pill" id="dayres-streak"></div>
-    <button class="btn btn-ink" id="btn-dayres-home">К прогрессу</button>
-  </section>
-
-  <!-- ДОМ / ПРОГРЕСС -->
-  <section class="scr scr-paper" id="scr-home">
-    <div class="home-hero">
-      <div class="cinefade" data-img-a="assets/img/scene_hero.jpg" data-img-b="assets/img/scene_hero_b.jpg"></div>
-      <div class="cine-veil"></div>
-      <div class="home-hero-content">
-        <div class="brandline">DZEN · Энергия</div>
-        <div class="home-season" id="home-season"></div>
-        <div class="ring-wrap"><svg id="ring" viewBox="0 0 120 120"></svg>
-          <div class="ring-center"><div class="ring-num" id="ring-num">0</div><div class="ring-label">из 7 серий</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="pad">
-      <button class="btn btn-ink" id="btn-go-check">Замерить день · 30 сек</button>
-      <div class="home-checked tiny center" id="home-checked"></div>
-
-      <div class="card">
-        <div class="card-title">Энергия по дням</div>
-        <svg id="spark" viewBox="0 0 300 90" preserveAspectRatio="none"></svg>
-        <div class="spark-legend tiny" id="spark-legend"></div>
-      </div>
-
-      <div class="card" id="insight-card" hidden>
-        <div class="card-title">Находка</div>
-        <p id="insight-text" class="insight"></p>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Ачивки</div>
-        <div class="achv-row" id="achv-row"></div>
-      </div>
-
-      <div class="card habit-card" id="habit-card"></div>
-
-      <div class="dzen-banner">
-        <img src="assets/img/poster_drink.jpg" alt="" class="dzen-banner-img">
-        <div>
-          <div class="serif dzen-banner-title">Энергия любит пузырьки</div>
-          <p class="small">DZEN — газировка без сахара, с клетчаткой для микробиоты.
-          Польза, которую не надо терпеть. Ищи в Додо Пицце.</p>
-        </div>
-      </div>
-
-      <div class="home-foot tiny">
-        <a href="#" id="btn-demo">показать, как будет через неделю · демо</a>
-        <a href="#" id="btn-ai">ИИ для голоса</a>
-        <a href="#" id="btn-reset">начать заново</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- АЧИВКА · ФИНАЛ СЕЗОНА -->
-  <section class="scr scr-paper scr-center" id="scr-achieve">
-    <canvas id="confetti"></canvas>
-    <div class="achieve-wrap">
-      <div class="eyebrow">Финал сезона</div>
-      <canvas id="share-card" width="1080" height="1350"></canvas>
-      <p class="sub center">Ты правда красавчик. Такое не стыдно показать.</p>
-      <div class="share-row">
-        <button class="btn btn-ink" id="btn-share-tg">Поделиться в Telegram</button>
-        <button class="btn btn-soft" id="btn-share-save">Скачать картинку</button>
-      </div>
-      <button class="btn btn-soft" id="btn-achieve-next" hidden>Запустить сезон 2 · добавить привычку</button>
-      <button class="btn btn-ghost" id="btn-achieve-home">К прогрессу</button>
-    </div>
-  </section>
-
-  <!-- ШТОРКА ИИ ДЛЯ ГОЛОСА -->
-  <div class="sheet" id="sheet-ai">
-    <div class="sheet-card">
-      <div class="sheet-grab"></div>
-      <h3>Нейронка для голосового ввода</h3>
-      <p class="small">Голос превращается в текст прямо в телефоне. А чтобы текст сам раскладывался
-      по ползункам, нужна нейронка — вставь ключ одного из сервисов. Без ключа работает
-      простой разбор по словам.</p>
-      <div class="ai-row">
-        <label class="small" for="ai-provider">Нейронка</label>
-        <select id="ai-provider">
-          <option value="local">Без нейронки (по словам)</option>
-          <option value="claude">Claude (Anthropic)</option>
-          <option value="groq">Groq (Llama)</option>
-        </select>
-      </div>
-      <input type="password" id="ai-key" placeholder="Ключ API (хранится только в этом телефоне)" autocomplete="off">
-      <button class="btn btn-ink" id="btn-ai-save">Сохранить</button>
-      <button class="btn btn-ghost sheet-close">Закрыть</button>
-    </div>
+<div class="wrap">
+  <div class="brand">DZEN · Энергия</div>
+  <h1>Насколько ты <em>в ресурсе?</em><br>Выбери свой вкус</h1>
+  <p class="sub">Один трекер — четыре характера. Прогресс общий: серия и ачивки не потеряются, в какой бы версии ты ни зашёл.</p>
+  <a class="cont" id="cont" href="#">Продолжить, где остановился →</a>
+  <div class="grid">
+    <a class="vcard" href="nf/">
+      <img src="assets/img/nf_hero.jpg" alt=""><div class="veil"></div>
+      <div class="tag">🎬 кино</div>
+      <div class="vc-txt"><div class="vc-kind">Netflix-стиль</div><div class="vc-title">Тёмное кино</div>
+      <div class="vc-note">ползунки · полка привычек</div></div></a>
+    <a class="vcard" href="nf-chat/">
+      <img src="assets/img/scene_stress.jpg" alt=""><div class="veil"></div>
+      <div class="tag">🎬 кино</div>
+      <div class="vc-txt"><div class="vc-kind">Netflix-стиль</div><div class="vc-title">Ночной чат</div>
+      <div class="vc-note">живой диалог · голос</div></div></a>
+    <a class="vcard light" href="dk/">
+      <img src="assets/img/dk_hero.jpg" alt=""><div class="veil"></div>
+      <div class="tag">🥤 сочный</div>
+      <div class="vc-txt"><div class="vc-kind">Drinkit-стиль</div><div class="vc-title">Светлый и сочный</div>
+      <div class="vc-note">ползунки · большие карточки</div></div></a>
+    <a class="vcard light" href="dk-chat/">
+      <img src="assets/img/mascot.jpg" alt=""><div class="veil"></div>
+      <div class="tag">🥤 сочный</div>
+      <div class="vc-txt"><div class="vc-kind">Drinkit-стиль</div><div class="vc-title">Чат с банкой</div>
+      <div class="vc-note">живой диалог · голос</div></div></a>
   </div>
-
-  <!-- ШТОРКА TELEGRAM -->
-  <div class="sheet" id="sheet-tg">
-    <div class="sheet-card">
-      <div class="sheet-grab"></div>
-      <h3>Напоминание в Telegram</h3>
-      <p class="small">У нас есть бот <b>@dzen_energy_bot</b>. Жми кнопку, в боте нажми «Старт» —
-      и каждый вечер в выбранное время будет приходить напоминание замерить день.
-      Семь серий — потом бот сам поздравит с финалом сезона.</p>
-      <ol class="small sheet-list">
-        <li>Открой бота кнопкой ниже.</li>
-        <li>Нажми «Старт» (или «Restart»).</li>
-        <li>Готово. Отключить — командой /stop в любой момент.</li>
-      </ol>
-      <button class="btn btn-ink" id="btn-tg-open">Открыть бота</button>
-      <button class="btn btn-ghost sheet-close">Закрыть</button>
-    </div>
-  </div>
-
+  <div class="foot">прогресс хранится только у тебя · <a href="classic/">классическая версия</a></div>
 </div>
-<script src="assets/app.js"></script>
+<script>
+try{
+  var v=localStorage.getItem('dzen10.variant');
+  var has=localStorage.getItem('dzen10');
+  if(v&&has&&v!=='/dzen-energy/'&&v.indexOf('classic')<0){
+    var c=document.getElementById('cont');c.href='.'+v.replace(/^\/dzen-energy/,'');c.style.display='block';}
+}catch(e){}
+</script>
 </body>
 </html>
