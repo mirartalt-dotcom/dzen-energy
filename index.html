@@ -70,6 +70,17 @@ h1 em{font-style:italic}
   <div class="foot">прогресс хранится только у тебя · <a href="classic/">классическая версия</a></div>
 </div>
 <script>
+(function(){
+  var ua=navigator.userAgent||'';
+  var ios=/iPhone|iPad|iPod/.test(ua)&&/AppleWebKit/.test(ua)&&!/Safari\//.test(ua)&&!/CriOS|FxiOS|EdgiOS/.test(ua)&&!navigator.standalone;
+  var and=/Android/.test(ua)&&(/Telegram/i.test(ua)||/; wv\)/.test(ua));
+  if(!ios&&!and)return;
+  var url=location.href.split('#')[0];
+  setTimeout(function(){
+    try{ if(ios){location.href='x-safari-'+url;}
+    else{location.href='intent://'+url.replace(/^https?:\/\//,'')+'#Intent;scheme=https;S.browser_fallback_url='+encodeURIComponent(url)+';end';} }catch(e){}
+  },700);
+})();
 try{
   var v=localStorage.getItem('dzen10.variant');
   var has=localStorage.getItem('dzen10');
