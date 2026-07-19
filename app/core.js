@@ -39,7 +39,7 @@ var HABITS=[
 function habit(id){for(var i=0;i<HABITS.length;i++)if(HABITS[i].id===id)return HABITS[i];return HABITS[0];}
 
 /* состояние (общее для всех версий на этом домене) */
-var KEY='dzen10';
+var KEY=window.DZEN_KEY||'dzen10';
 var S=loadState();
 function loadState(){try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&s.v===1)return s;}catch(e){}
   return {v:1,quiz:null,habits:[],days:{},streak:0,best:0,lastCheck:null,freezes:{},achv:{},remind:'21:30',demo:false};}
