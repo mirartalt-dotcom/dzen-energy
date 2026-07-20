@@ -9,6 +9,8 @@
 <meta name="theme-color" content="#F4F1EA">
 <link rel="apple-touch-icon" href="assets/img/icon-180.png">
 <link rel="icon" href="assets/img/icon-180.png">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="app/tg.js"></script>
 <style>
 @font-face{font-family:'Cormorant Garamond';src:url('assets/fonts/cormorant.ttf') format('truetype');font-weight:250 700;font-display:swap}
 @font-face{font-family:'Cormorant Garamond';src:url('assets/fonts/cormorant-italic.ttf') format('truetype');font-weight:250 700;font-style:italic;font-display:swap}
@@ -71,6 +73,7 @@ h1 em{font-style:italic}
 </div>
 <script>
 (function(){
+  if(window.DZEN_TG)return;
   var ua=navigator.userAgent||'';
   var ios=/iPhone|iPad|iPod/.test(ua)&&/AppleWebKit/.test(ua)&&!/Safari\//.test(ua)&&!/CriOS|FxiOS|EdgiOS/.test(ua)&&!navigator.standalone;
   var and=/Android/.test(ua)&&(/Telegram/i.test(ua)||/; wv\)/.test(ua));

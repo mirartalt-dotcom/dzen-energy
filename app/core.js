@@ -324,7 +324,7 @@ function makeRecognizer(onText,onState,onNote){
         recording=true;onState(true);
         maxT=setTimeout(function(){if(recording)finishStop();},30000);
       }).catch(function(){
-        note('Телефон не дал доступ к микрофону. Разреши: значок «АА» в адресной строке Safari → Настройки сайта → Микрофон → Разрешить.');});
+        note(window.DZEN_TG?'Телеграм не дал доступ к микрофону. Разреши микрофон для Telegram в настройках телефона и попробуй ещё раз.':'Телефон не дал доступ к микрофону. Разреши: значок «АА» в адресной строке Safari → Настройки сайта → Микрофон → Разрешить.');});
     }};
   }
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -343,6 +343,7 @@ function makeRecognizer(onText,onState,onNote){
 
 /* побег из встроенного браузера (Телеграм и т.п.) в Safari/Chrome */
 (function(){
+  if(window.DZEN_TG)return;
   var ua=navigator.userAgent||'';
   var iosInApp=/iPhone|iPad|iPod/.test(ua)&&/AppleWebKit/.test(ua)
     &&!/Safari\//.test(ua)&&!/CriOS|FxiOS|EdgiOS/.test(ua)&&!navigator.standalone;
